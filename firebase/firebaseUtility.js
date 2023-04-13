@@ -1,25 +1,23 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-const config = {
+const firebaseConfig = {
 
-    apiKey: "AIzaSyCfJfJ4Z9eBkGkvT87wGGtkrK6kxIPfHBU",
-
-  authDomain: "vp-nagoa.firebaseapp.com",
-
-  projectId: "vp-nagoa",
-
-  storageBucket: "vp-nagoa.appspot.com",
-
-  messagingSenderId: "791183576661",
-
-  appId: "1:791183576661:web:6b827d7dfa53a7021e0edc",
-
-  measurementId: "G-HBJ80NJQH6"
-
-
-
-}
+    apiKey: "AIzaSyC-sQgenGOjvaiaCiiJfGjcxQ0elnce14I",
+  
+    authDomain: "village-panchayt.firebaseapp.com",
+  
+    projectId: "village-panchayt",
+  
+    storageBucket: "village-panchayt.appspot.com",
+  
+    messagingSenderId: "330692708351",
+  
+    appId: "1:330692708351:web:3d60b3aaeadc898dec49ca",
+  
+    measurementId: "G-C6P0V59CS9"
+  
+  };
 export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) return;
     const userRef = firestore.doc(`users/${userAuth.uid}`);
@@ -46,7 +44,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 //end
 
 // Initialize Firebase
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();//db
