@@ -1,5 +1,5 @@
 {
-  "name": "vp-nagoa-user",
+  "name": "vp-chicalim-user",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pradeephelloofriend/vp-nagoa-user.git"
+    "url": "git+https://github.com/pradeephelloofriend/vp-chicalim-user.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pradeephelloofriend/vp-nagoa-user/issues"
+    "url": "https://github.com/pradeephelloofriend/vp-chicalim-user/issues"
   },
-  "homepage": "https://github.com/pradeephelloofriend/vp-nagoa-user#readme",
+  "homepage": "https://github.com/pradeephelloofriend/vp-chicalim-user#readme",
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@mui/icons-material": "^5.2.0",
