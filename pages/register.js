@@ -4,8 +4,11 @@ import RegisterComponent from '../components/register/RegisterComponent'
 
 const register = () => {
   return (
+   
+        <RegisterComponent/>
+   
     
-    <RegisterComponent/>
+    
     
   )
 }

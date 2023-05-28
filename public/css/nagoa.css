@@ -13013,7 +13013,7 @@ body {
   color: rgba(55, 56, 87, 0.6); }
 
 .signin-form, .signup-form {
-  margin-top: 40px;
+  margin-top: 5px;
   margin-bottom: 40px; }
   .signin-form .form-group, .signup-form .form-group {
     margin-bottom: 20px; }

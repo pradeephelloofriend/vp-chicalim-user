@@ -16,7 +16,7 @@ export default class ImgDecode extends Component {
       let results = await reader.decode(e.target.files[0]);
       for (let result of results) {
         alert(result.barcodeText);
-        console.log('result.barcodeText',result.barcodeText)
+        //console.log('result.barcodeText',result.barcodeText)
       }
       if (!results.length) { alert('No barcode found'); }
     } catch (ex) {
@@ -35,7 +35,7 @@ export default class ImgDecode extends Component {
   async componentWillUnmount() {
     if (this.pReader) {
       (await this.pReader).destroyContext();
-      console.log('ImgDecode Component Unmount');
+      //console.log('ImgDecode Component Unmount');
     }
   }
 

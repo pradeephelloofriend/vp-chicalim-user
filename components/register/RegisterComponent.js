@@ -16,7 +16,7 @@ const RegisterComponent = () => {
 
       <div className="signup-sidebar">
         <div className="signup-sidebar-body">
-          <a href="dashboard-one.html" className="sidebar-logo mg-b-40"><span>Village Panchayat ,Nagoa</span></a>
+          <a href="dashboard-one.html" className="sidebar-logo mg-b-10"><span>Village Panchayat ,Nagoa</span></a>
           <h4 className="signup-title">Create New Account!</h4>
           <h5 className="signup-subtitle">It's free and only takes a minute.</h5>
 

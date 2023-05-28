@@ -13,7 +13,7 @@ class VideoDecode extends React.Component {
             await scanner.setUIElement(this.elRef.current);
             scanner.onFrameRead = results => {
                 for (let result of results) {
-                    console.log(result.barcodeText);
+                    //console.log(result.barcodeText);
                 }
             };
             scanner.onUniqueRead = (txt, result) => {
@@ -34,7 +34,7 @@ class VideoDecode extends React.Component {
     async componentWillUnmount() {
         if (this.pScanner) {
             (await this.pScanner).destroyContext();
-            console.log('BarcodeScanner Component Unmount');
+            //console.log('BarcodeScanner Component Unmount');
         }
     }
     shouldComponentUpdate() {

@@ -6,16 +6,20 @@ import UnderDevelopComponent from '../components/error/UnderDevelopComponent';
 
 import HomeComponent from '../components/home/HomeComponent';
 import ProtectRoute from '../components/layout/ProtectRoute';
-const Index = () => {
+import PendingProfileComponent from '../components/profile/PendingProfileComponent';
+import { selectCuser } from '../redux/user/userSelector';
+const index = ({cUser}) => {
    
     return (
         <>
         <ProtectRoute>
             {/*<HomeComponent/>*/}
-            <UnderDevelopComponent/>
+            <PendingProfileComponent cUser={cUser}/>
           </ProtectRoute>
         </>
     )
 }
-
-export default Index
+const mapStateToProps=createStructuredSelector({
+    cUser:selectCuser
+})
+export default connect(mapStateToProps)(index)

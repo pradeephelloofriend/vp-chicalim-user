@@ -84,8 +84,11 @@ const HeaderComponent = ({setToggleActive,cUser}) => {
                 </div>
               </div>
               <div className="dropdown-menu-body">
-                <a href="#" className="dropdown-item"><i data-feather="user"></i> View Profile</a>
-                <a href="#" className="dropdown-item"><i data-feather="edit-2"></i> Edit Profile</a>
+                <a onClick={()=>router.push({
+                        pathname:'/profile',
+                        query:{uId:cUser.id,hNo:cUser.hNo}
+                    })} href="#" className="dropdown-item"><i data-feather="user"></i> View Profile</a>
+               
                 <a href="#" className="dropdown-item"><i data-feather="briefcase"></i> Account Settings</a>
                 <a href="#" className="dropdown-item"><i data-feather="shield"></i> Privacy Settings</a>
                 <a onClick={()=>router.push('/logout')} href="#" className="dropdown-item"><i data-feather="log-out"></i> Sign Out</a>

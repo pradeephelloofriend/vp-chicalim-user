@@ -3,22 +3,23 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 const firebaseConfig = {
 
-    apiKey: "AIzaSyC-sQgenGOjvaiaCiiJfGjcxQ0elnce14I",
+    apiKey: "AIzaSyCsi0C05blh_SFS8NO_YTLWzJjeAoT0-x4",
+
+    authDomain: "vp-chicalim.firebaseapp.com",
   
-    authDomain: "village-panchayt.firebaseapp.com",
+    projectId: "vp-chicalim",
   
-    projectId: "village-panchayt",
+    storageBucket: "vp-chicalim.appspot.com",
   
-    storageBucket: "village-panchayt.appspot.com",
+    messagingSenderId: "116311674189",
   
-    messagingSenderId: "330692708351",
+    appId: "1:116311674189:web:e2833a1922e636f991bb04",
   
-    appId: "1:330692708351:web:3d60b3aaeadc898dec49ca",
+    measurementId: "G-6NRLTXFQR3"
   
-    measurementId: "G-C6P0V59CS9"
   
   };
-export const createUserProfileDocument = async (userAuth, additionalData) => {
+export const createUserProfileDocument = async (userAuth, additionalData,hNo,aNo,wNo) => {
     if (!userAuth) return;
     const userRef = firestore.doc(`users/${userAuth.uid}`);
     const snapShot = await userRef.get();
@@ -30,8 +31,14 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
             await userRef.set({
                 displayName,
                 email,
+                hNo,
+                aNo,
+                wNo,
                 createdDate,
-                ...additionalData
+                ...additionalData,
+                ...hNo,
+                ...aNo,
+                ...wNo
             })
 
         } catch (error) {

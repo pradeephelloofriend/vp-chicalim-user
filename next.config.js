@@ -10,10 +10,10 @@ module.exports = {
     },
     env:{
         // API_PATH:"http://localhost:1339",
-        API_PATH:"https://speedtrack.co.in/wp-vp-nagoa/wp-json/wp/v2/",
-        SQL_API_PATH:"https://speedtrack.co.in/api/react/vp-nagoa",
-        WP_API_PATH:"https://speedtrack.co.in/wp-vp-nagoa/wp-json/wp/v2/",
-        GQL_API_PATH:'https://speedtrack.co.in/wp-vp-nagoa/graphql',
+        API_PATH:"https://speedtrack.co.in/wp-chicalim/wp-json/wp/v2/",
+        SQL_API_PATH:"https://speedtrack.co.in/api/react/vp-chicalim",
+        WP_API_PATH:"https://speedtrack.co.in/wp-chicalim/wp-json/wp/v2/",
+        GQL_API_PATH:'https://speedtrack.co.in/wp-chicalim/graphql',
         JWT_TOKEN:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJhZG1pbiIsImlhdCI6MTY1NzU1ODkxNCwiZXhwIjoxODE1MjM4OTE0fQ.kg71BT59KvKXpk6w0i-rBdx_At1NQWthSgmyXieYjiA',
 /*
         RAZORPAY_KEY:'rzp_test_b2yM4suN8KttZf',

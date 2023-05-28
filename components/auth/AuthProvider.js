@@ -5,47 +5,116 @@ import { setCurrentUser,setUserActive } from '../../redux/user/userAction';
 import { selectCuser } from '../../redux/user/userSelector';
 import { createUserProfileDocument, auth } from '../../firebase/firebaseUtility';
 import {useRouter} from 'next/router';
-
-const AuthProvider = ({children,setCurrentUser,cUser,setUserActive}) => {
+import Axios from 'axios';
+import { selectRegStatus } from '../../redux/menu/menuSelector';
+import { setRegStatus } from '../../redux/menu/menuAction';
+const AuthProvider = ({children,setCurrentUser,cUser,setUserActive,regStatus,setRegStatus}) => {
     const router=useRouter()
     //console.log('cuser,',cUser)
-    React.useEffect(()=>{
-        if(cUser == null){
-           auth.onAuthStateChanged(async userAuth => {
-                //console.log(userAuth)
-
-                if (userAuth) {
-                    //setUserActive(true) //for loading 
-                    const userRef = await createUserProfileDocument(userAuth);
-                    userRef.onSnapshot(snapShot => {
-                        //console.log('snapshot', snapShot())
-                        
-                        setCurrentUser({
-                            id: snapShot.id,
-                            ...snapShot.data()
-                        })
-                        alert('successfully signed in')
-                        setUserActive(false)
-                        //setTimeout(() =>setUserActive(false), 4000);
-                        router.push('/')
-                        
-                    })
+    async function addUserInfoToAdbook(id,dName,email,hNo,aNo,wNo){
+        
+            await Axios.post(`api/user/insertUserInfo`,
+                {
+                    userId: id,
+                    userName: dName,
+                    email:email,
+                    hNo:hNo,
+                    aNo:aNo,
+                    wNo:wNo
                 }
-            })
+            )
+                .then(({data}) => {
+                //console.log("during fetch",data);
+                if(data==1){
+                    alert('successfully signed in')
+                    setUserActive(false)
+                    setRegStatus(false)
+                    //setTimeout(() =>setUserActive(false), 4000);
+                    router.push('/')
+                }else{
+                    alert('error')
+                    setUserActive(false)
+                    setRegStatus(false)
+                }
+                
+                    
+                    
+    
+                })
+        }
+    React.useEffect(()=>{
+        let isLoad=true;
+        if (regStatus) {
+            if(cUser == null){
+                auth.onAuthStateChanged(async userAuth => {
+                     //console.log(userAuth)
+     
+                     if (userAuth) {
+                         //setUserActive(true) //for loading 
+                         const userRef = await createUserProfileDocument(userAuth);
+                         userRef.onSnapshot(snapShot => {
+                             //console.log('snapshot', snapShot())
+                             
+                             setCurrentUser({
+                                 id: snapShot.id,
+                                 ...snapShot.data()
+                             })
+                             if(snapShot.data()!==undefined){
+                                 if(isLoad==true){
+                                     if (regStatus) {
+                                         addUserInfoToAdbook(snapShot.id,snapShot.data().displayName,snapShot.data().email,snapShot.data().hNo,snapShot.data().aNo,snapShot.data().wNo)
+                                     }
+                                      
+                                 
+                                 }
+                          
+                             }
+                             
+                             
+                         })
+                     }
+                 })
+             }
+        } else {
+            if(cUser == null){
+                auth.onAuthStateChanged(async userAuth => {
+                     //console.log(userAuth)
+     
+                     if (userAuth) {
+                         //setUserActive(true) //for loading 
+                         const userRef = await createUserProfileDocument(userAuth);
+                         userRef.onSnapshot(snapShot => {
+                             //console.log('snapshot', snapShot())
+                             
+                             setCurrentUser({
+                                 id: snapShot.id,
+                                 ...snapShot.data()
+                             })
+                             setUserActive(false)
+                             router.push('/')
+                             
+                             
+                         })
+                     }
+                 })
+             } 
         }
         
-    },[cUser])
+        
+    },[cUser,regStatus])
   return (
     <>
-    {children}
+    {regStatus?<></>:children}
     </>
   )
 }
 const mapStateToProps = createStructuredSelector({
     cUser: selectCuser,
+    regStatus:selectRegStatus
 })
 const mapDispatchToProps=dispatch=>({
     setCurrentUser: cUser => dispatch(setCurrentUser(cUser)),
-    setUserActive:data=>dispatch(setUserActive(data))
+    setUserActive:data=>dispatch(setUserActive(data)),
+    setRegStatus:data=>dispatch(setRegStatus(data))
   })
 export default connect(mapStateToProps,mapDispatchToProps) (AuthProvider)
