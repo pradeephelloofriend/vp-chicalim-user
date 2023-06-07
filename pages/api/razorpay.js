@@ -3,7 +3,7 @@ const shortid = require("shortid");
 
 export default async function handler(req, res) {
   const { taxAmt } = req.body;
-  ///console.log('taxAmt',taxAmt)
+  console.log('taxAmt',taxAmt*100)
   if (req.method === "POST") {
     // Initialize razorpay object
     const razorpay = new Razorpay({

@@ -4,14 +4,18 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
 import MakeTaxPaymentComponent from '../payment/MakeTaxPaymentComponent';
+import { createStructuredSelector } from 'reselect';
+import { selectCuser } from '../../redux/user/userSelector';
+import { connect } from 'react-redux';
 
-const TaxPaymentComponent = () => {
+const TaxPaymentComponent = ({cUser}) => {
     const router= useRouter()
     const [form] = Form.useForm();
     const [taxData,setTaxData]=React.useState(null)
     const [selctionData,setSelectionData]=React.useState(null)
     const [tAmt,setTamt]=React.useState(0)
     const [loading,setLoading]=React.useState(false)
+
     const columns = [
         {
           title: 'Sr. No',
@@ -53,32 +57,39 @@ const TaxPaymentComponent = () => {
             setSelectionData(selectedRows)
             const sum=selectedRows.reduce((a,v) =>  a = a + parseFloat(v.ddamount), 0 )
             setTamt(sum.toFixed(2))
-          //console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', sum);
         },
         getCheckboxProps: (record) => ({
           disabled: record.name === 'Disabled User',
           // Column configuration not to be checked
           name: record.name,
         }),
-      };  
-    const onFinish = (values) => {
-        //var num=Number('516/Q')
-        setLoading(true)
-        Axios.post(`/api/getTaxPayment`,{ hNo:values.houseNo})
+      };
+      const getHouseTaxData=(id)=>{
+        try {
+          setLoading(true)
+        Axios.post(`/api/getTaxPayment`,{ hNo:id})
             .then(({ data }) => {
                 const tempData=[]
                 //console.log('api-taxi-data',data)
                 
                 data.forEach((element,idx) => {
                     //console.log('element',element)
-                    tempData.push({key:element.dddocno,sNo:idx+1,desc:element.ddrmk,dddocdt:element.dddocdt,ddamount:element.ddamount,ddan:element.ddan,dddocno:element.dddocno,ddrefno
-                    :element.ddrefno,ddid:element.ddid})
+                    tempData.push({key:element.DDDOCNO,sNo:idx+1,desc:element.DL01,dddocdt:element.DDDOCDT,ddamount:element.DDAMOUNT,ddan:element.DDAN,dddocno:element.DDDOCNO,ddrefno
+                    :element.DDREFNO,ddid:element.DDID})
                   });
 
                 setTaxData(tempData.length>=1?tempData:null)
                 setLoading(false)
                 
             })
+        } catch (error) {
+          setLoading(false)
+        }
+      }  
+    const onFinish = (values) => {
+        //var num=Number('516/Q')
+        
         //router.push('/payment')
         //console.log('Success:', values);
       };
@@ -87,11 +98,23 @@ const TaxPaymentComponent = () => {
         //console.log('Failed:', errorInfo);
       };
       //console.log('loading',loading)
+      React.useEffect(()=>{
+        let isAppSubsribed=true
+        if (isAppSubsribed) {
+            getHouseTaxData(cUser.hNo)
+        }
+      },[cUser])
+      console.log('tamount',Number(tAmt))
   return (
-      <>
-          
-                  <div className="row">
-                      <div className='col-12 mt-10 mb-10'>
+    <>
+    <Spin spinning={loading}>
+      <div className="row">
+        
+          <div className="caption1 mt-10">
+            <h3>{'TAX PAYMENTS'}</h3>
+            <p>Amount shown is outstanding towards your account. To avoid additional fees, please pay.</p>
+          </div>
+          {/*<div className='col-12 mt-10 mb-10'>
                           <div className="caption1">
                               <h3>{'TAX PAYMENTS'}</h3>
                               <p>Enter the details to get Your tax payments list and details.</p>
@@ -139,45 +162,50 @@ const TaxPaymentComponent = () => {
                               </Form>
                           </div>
 
-                      </div>
-                      {taxData!==null?
-                      <>
-                      
-                      <div className='col-md-6'>
-                        <div className='scheme-block'>
-                            
-                            <Table bordered 
-                            rowSelection={{
-                                type:'checkbox',
-                                ...rowSelection,
-                              }}
-                            columns={columns} 
-                            dataSource={taxData} 
-                            />
-                            
-                            
-                            </div>
-                      </div>
-                      <div className='col-md-6'>
-                        <MakeTaxPaymentComponent tAmt={tAmt} selctionData={selctionData}/>
-                        
-                      </div>
-                      </>
-                      :
-                      <>
-                      <p className='text-red'>No Data Found</p>
-                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-                      </>
-                      
-                      }
-                      
-                  </div>
-             
+                      </div>*/}
+
+          {taxData !== null ?
+            <>
+
+              <div className='col-md-6'>
+                <div className='scheme-block'>
+
+                  <Table bordered
+                    rowSelection={{
+                      type: 'checkbox',
+                      ...rowSelection,
+                    }}
+                    columns={columns}
+                    dataSource={taxData}
+                  />
+
+
+                </div>
+              </div>
+              <div className='col-md-6'>
+                <MakeTaxPaymentComponent tAmt={tAmt} selctionData={selctionData} />
+
+              </div>
+
+            </>
+
+            :
+            <>
+              <p className='text-red'>No Data Found</p>
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            </>
+
+          }
+
+      </div>
+    </Spin >
 
 
 
       </>
   )
 }
-
-export default TaxPaymentComponent
+const mapStateToProps=createStructuredSelector({
+  cUser:selectCuser
+})
+export default connect(mapStateToProps) (TaxPaymentComponent)
