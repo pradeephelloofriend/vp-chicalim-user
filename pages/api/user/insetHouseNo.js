@@ -1,6 +1,6 @@
 const API_URL = process.env.SQL_API_PATH
 
-export default async function insertUserInfo(req, res) {
+export default async function insetHouseNo(req, res) {
     
     const { userId,userName,email,mNo,hNo,wNo,houseVerify} = req.body;
     //console.log("req nom", userId+","+userName+","+email+","+hNo+","+aNo+","+wNo)

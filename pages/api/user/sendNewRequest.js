@@ -1,15 +1,15 @@
 const API_URL = process.env.SQL_API_PATH
 
-export default async function insertUserInfo(req, res) {
+export default async function sendNewRequest(req, res) {
     
-    const { userId,userName,email,mNo,hNo,wNo,houseVerify} = req.body;
+    const { userId,hNo,wNo} = req.body;
     //console.log("req nom", userId+","+userName+","+email+","+hNo+","+aNo+","+wNo)
     /**********
      * slug[0]=item id,slug[1]=quantity,slug[2]=userid
      */
     //let data
     try{
-        const result= await fetch(`${API_URL}/insert-user-info.php`, {
+        const result= await fetch(`${API_URL}/sendNewRequest.php`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -18,12 +18,9 @@ export default async function insertUserInfo(req, res) {
             },
             body:JSON.stringify({
                 userId: userId,
-                userName: userName,
-                email:email,
-                mNo:mNo,
                 hNo:hNo,
                 wNo:wNo,
-                houseVerify:houseVerify
+                
                 
                 
             })

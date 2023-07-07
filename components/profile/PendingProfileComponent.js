@@ -1,21 +1,81 @@
-import { Card,Button, Result, Spin } from 'antd'
+import { Card,Button, Result, Spin, Checkbox, Form, Input, InputNumber,Select, Space,Alert } from 'antd'
 import React from 'react'
 import Axios from 'axios';
 import { useRouter } from 'next/router';
-const PendingProfileComponent = ({cUser}) => {
+import Marquee from 'react-fast-marquee';
+import { setHouseVerify } from '../../redux/user/userAction';
+import { connect } from 'react-redux';
+const { Option } = Select;
+const PendingProfileComponent = ({cUser,setHouseVerify}) => {
     const router=useRouter()
-    const[status,setStatus]=React.useState('N')
+    const[pData,setPdata]=React.useState(null)
     const[isLoading,setIsLoading]=React.useState(false)
+    const[wardList,setWardList]=React.useState(null)
+    const[hVerify,setHverify]=React.useState('')
+
+    const [form] = Form.useForm();
+    const sendNewRequest=async(wNo,hNo)=>{
+        try {
+            setIsLoading(true)
+            const {data} = await Axios.post(`/api/user/sendNewRequest`,{wNo:wNo,hNo:hNo,userId:cUser.id})
+            setIsLoading(false)
+            return data
+            
+        } catch (error) {
+            setIsLoading(false)
+        }
+        
+    }
+    const onFinish =async(values) => {
+        //const hvData=await sendNewRequest(values.wNo,values.hNo)
+
+        try {
+            setIsLoading(true)
+            Axios.post(`/api/user/sendNewRequest`,{wNo:values.wNo,hNo:values.hNo,userId:cUser.id})
+            .then(({data})=>{
+                getUserData(cUser.id)
+                setIsLoading(false)
+            })
+        } catch (error) {
+            setIsLoading(false)
+        }
+        //console.log('hvData',hvData)
+       
+    }
+    const onFinishFailed = (errorInfo) => {
+       
+    };
+    const selectHandeler=()=>{
+        try {
+            setIsLoading(true)
+            Axios.get(`api/getWardNumberInfo`)
+        .then(({data})=>{
+            setWardList(data)
+            setIsLoading(false)
+            //console.log('data',data)
+        })
+        } catch (error) {
+            setIsLoading(false)
+        }
+        
+        //alert('hhggg')
+    }
+    
     const getUserData=(id)=>{
         try {
             setIsLoading(true)
-           Axios.post('/api/user/getUserStatus',{uId:id})
+           Axios.post('/api/user/checkHouseNumberConfirmation',{uId:id})
            .then(({data})=>{
-                setStatus(data[0].m_istatus)
+                setPdata(data)
+                if (data.length>=1) {
+                    setHverify(data[0].ur_status) //store in state
+                    setHouseVerify(data[0].ur_status) //store in redux
+                    
+                }
                 setIsLoading(false)
            })
         } catch (error) {
-            
+            setIsLoading(false)
         }
 
     }
@@ -29,12 +89,119 @@ const PendingProfileComponent = ({cUser}) => {
             isAppSubscribed=false
         }
     },[cUser])
-    //console.log('status',status)
+    //console.log('status',pData)
     return (
         
         <div className='pen-profile mt-10 mb-10'>
             <Spin spinning={isLoading}>
-            {status=='N'?
+                {pData!==null?
+                pData.length>=1?
+                <>
+                
+                </>
+                :
+                <div className='row'>
+                    <div className='col-md-6'>
+                    <Card>
+                    <div className='welcome-head mb-10'>
+                        <h5 className='text-danger'>Please update your <strong>House Number</strong> and <strong>Ward Number</strong> !!</h5>
+                    </div>
+                    <div className='p-update-form'>
+                    <Form
+                        layout="vertical"
+                        form={form}
+                        className='login-form'
+                        name="basic"
+
+                        initialValues={{
+                            remember: true,
+                        }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+                    >
+                        <Form.Item 
+                          name="wNo"
+
+                          rules={[
+                              {
+                                  required: true,
+                                  message: 'Please input your password!',
+                              },
+                          ]}>
+                          <Select onClick={() => selectHandeler()}
+                              loading={isLoading}
+                              placeholder="Select ward no"
+                          >
+                              {wardList !== null ?
+                                  wardList.map((v, vx) =>
+                                      <Select.Option key={vx} value={v.KY}>{v.DL01}</Select.Option>
+                                  )
+
+                                  : <></>}
+
+                          </Select>
+                      </Form.Item>
+                        <Form.Item
+                          name="hNo"
+                            rules={[{ required: true, message: 'Please input your House number!' }]}
+                      >
+                         <Input style={{width:'100%'}} placeholder='House Number' />
+                        
+                      </Form.Item>
+                      
+                      <Form.Item >
+
+                  <Button  className='mt-2 btn btn-brand-03 btn-uppercase btn-block' htmlType="submit">
+                      Submit Now
+                  </Button>
+              </Form.Item>
+                    </Form>
+                    </div>
+                    
+                </Card>
+                    </div>
+                    <div className='col-md-6'></div>
+                </div>
+                
+                :<></>}
+                {hVerify &&
+                
+                    <>
+                    {hVerify=="N"?
+                    <Alert
+                    closable
+                    banner
+                    message={
+                      <Marquee pauseOnHover gradient={false}>
+                        Your request has been sent, 
+                      </Marquee>
+                    }
+                  />
+                    :hVerify=="C"?
+                    <Alert
+                    type="success"
+                    closable
+                    banner
+                    message={
+                      <Marquee pauseOnHover gradient={false}>
+                        Your house number added successfully, 
+                      </Marquee>
+                    }
+                  />
+                  :<Alert
+                  type='error'
+                  closable
+                  banner
+                  message={
+                    <Marquee pauseOnHover gradient={false}>
+                      You provide wrong information, 
+                    </Marquee>
+                  }
+                />}
+                    </>
+                }
+            {/*status=='N'?
             <Card>
             <Result
                 title="Please update your profile"
@@ -51,11 +218,13 @@ const PendingProfileComponent = ({cUser}) => {
         </Card>
             :
             <></>
-            }
+            */}
             
             </Spin>
         </div>
     )
 }
-
-export default PendingProfileComponent
+const mapDispatchToProps=dispatch=>({
+    setHouseVerify:(data)=>dispatch(setHouseVerify(data))
+})
+export default connect(null,mapDispatchToProps) (PendingProfileComponent)

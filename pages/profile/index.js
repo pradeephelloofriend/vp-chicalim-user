@@ -6,7 +6,7 @@ const index = () => {
     
         <div className="row">
             <div className='col-12 mt-10 mb-10'>
-                <UserProfileComponent/>
+                {/*<UserProfileComponent/>*/}
             </div>
         </div>
                           

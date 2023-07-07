@@ -11,16 +11,15 @@ import { setRegStatus } from '../../redux/menu/menuAction';
 const AuthProvider = ({children,setCurrentUser,cUser,setUserActive,regStatus,setRegStatus}) => {
     const router=useRouter()
     //console.log('cuser,',cUser)
-    async function addUserInfoToAdbook(id,dName,email,hNo,aNo,wNo){
+    async function addUserInfoToAdbook(id,dName,email,mNo){
         
             await Axios.post(`api/user/insertUserInfo`,
                 {
                     userId: id,
                     userName: dName,
                     email:email,
-                    hNo:hNo,
-                    aNo:aNo,
-                    wNo:wNo
+                    mNo:mNo
+                    
                 }
             )
                 .then(({data}) => {
@@ -62,7 +61,7 @@ const AuthProvider = ({children,setCurrentUser,cUser,setUserActive,regStatus,set
                              if(snapShot.data()!==undefined){
                                  if(isLoad==true){
                                      if (regStatus) {
-                                         addUserInfoToAdbook(snapShot.id,snapShot.data().displayName,snapShot.data().email,snapShot.data().hNo,snapShot.data().aNo,snapShot.data().wNo)
+                                         addUserInfoToAdbook(snapShot.id,snapShot.data().displayName,snapShot.data().email,snapShot.data().mNo)
                                      }
                                       
                                  

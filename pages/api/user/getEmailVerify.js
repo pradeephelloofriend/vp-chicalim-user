@@ -1,23 +1,22 @@
 const API_URL = process.env.SQL_API_PATH
 
-export default async function getHouseNumberData(req, res) {
+export default async function getEmailVerify(req, res) {
     //console.log("req nom", req.query.slug)
-    const {hNo,wNo}=req.body
+    const {email}=req.body
     //console.log("req nom", wNo)
     /**********
      * slug[0]=item id,slug[1]=quantity,slug[2]=userid
      */
     //let data
     try{
-        const result= await fetch(`${API_URL}/getHouseNumberData.php`, {
+        const result= await fetch(`${API_URL}/getEmailVerify.php`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
                
             },
             body: JSON.stringify({
-                hNo:hNo, //house number
-                wNo:wNo //ward No
+                email:email
             })
         })
         const data= await result.json()

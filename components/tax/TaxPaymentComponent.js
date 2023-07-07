@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 import Axios from 'axios';
 import MakeTaxPaymentComponent from '../payment/MakeTaxPaymentComponent';
 import { createStructuredSelector } from 'reselect';
-import { selectCuser } from '../../redux/user/userSelector';
+import { selectCuser, selectHouseVerify } from '../../redux/user/userSelector';
 import { connect } from 'react-redux';
 
-const TaxPaymentComponent = ({cUser}) => {
+const TaxPaymentComponent = ({cUser,hVerify}) => {
     const router= useRouter()
     const [form] = Form.useForm();
     const [taxData,setTaxData]=React.useState(null)
@@ -57,7 +57,7 @@ const TaxPaymentComponent = ({cUser}) => {
             setSelectionData(selectedRows)
             const sum=selectedRows.reduce((a,v) =>  a = a + parseFloat(v.ddamount), 0 )
             setTamt(sum.toFixed(2))
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', sum);
+          //console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', sum);
         },
         getCheckboxProps: (record) => ({
           disabled: record.name === 'Disabled User',
@@ -104,7 +104,7 @@ const TaxPaymentComponent = ({cUser}) => {
             getHouseTaxData(cUser.hNo)
         }
       },[cUser])
-      console.log('tamount',Number(tAmt))
+      //console.log('tamount',Number(tAmt))
   return (
     <>
     <Spin spinning={loading}>
@@ -114,55 +114,7 @@ const TaxPaymentComponent = ({cUser}) => {
             <h3>{'TAX PAYMENTS'}</h3>
             <p>Amount shown is outstanding towards your account. To avoid additional fees, please pay.</p>
           </div>
-          {/*<div className='col-12 mt-10 mb-10'>
-                          <div className="caption1">
-                              <h3>{'TAX PAYMENTS'}</h3>
-                              <p>Enter the details to get Your tax payments list and details.</p>
-                          </div>
-                          <div className='form-box'>
-                              <Form
-                                  layout="inline"
-                                  form={form}
-                                  className='login-form'
-                                  name="basic"
-
-                                  initialValues={{
-                                      remember: true,
-                                  }}
-                                  onFinish={onFinish}
-                                  onFinishFailed={onFinishFailed}
-                                  autoComplete="off"
-                              >
-                                  <Form.Item
-                                      className='link-c-blue tax-form-item'
-                                      label=""
-                                      name="houseNo"
-                                      
-                                      rules={[
-                                          {
-                                              required: true,
-                                              message: 'Please input your house number or email id !',
-                                          },
-                                      ]}
-                                  >
-                                      <Input placeholder='Enter House Number or Reference Number '  />
-                                  </Form.Item>
-
-
-
-
-
-                                  <Form.Item>
-
-                                      <Button icon={<SearchOutlined />}  className='bg-c-blue' htmlType="submit">
-                                          Search
-                                      </Button>
-                                  </Form.Item>
-
-                              </Form>
-                          </div>
-
-                      </div>*/}
+          
 
           {taxData !== null ?
             <>
@@ -206,6 +158,7 @@ const TaxPaymentComponent = ({cUser}) => {
   )
 }
 const mapStateToProps=createStructuredSelector({
-  cUser:selectCuser
+  cUser:selectCuser,
+  hVerify:selectHouseVerify
 })
 export default connect(mapStateToProps) (TaxPaymentComponent)

@@ -9,6 +9,10 @@ export const setUserActive = data => ({
     type: userActionTypes.SET_USER_ACTIVE,
     payload: data
 })
+export const setHouseVerify = data => ({
+    type: userActionTypes.SET_HOUSE_VERIFY,
+    payload: data
+})
 
 
 

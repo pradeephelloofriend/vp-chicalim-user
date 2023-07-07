@@ -9,7 +9,8 @@ const INITIAL_STATE = {
     isRegistration:false,
     tripData:null,
     userProfileData:[],
-    userActive:false
+    userActive:false,
+    houseVerify:''
 }
 const UserReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
@@ -28,6 +29,12 @@ const UserReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 userPhone: action.payload
             }
+            case userActionTypes.SET_HOUSE_VERIFY:
+                //console.log('user cation',state.gUser)
+                return {
+                    ...state,
+                    houseVerify: action.payload
+                }
         case userActionTypes.SET_USER_PROFILE_DATA:
             //console.log('user cation',state.gUser)
             return {

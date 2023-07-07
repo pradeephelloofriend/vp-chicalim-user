@@ -17,3 +17,7 @@ export const selectUserActive = createSelector(
     [selectUser],
     (user) => user.userActive
 )
+export const selectHouseVerify = createSelector(
+    [selectUser],
+    (user) => user.houseVerify
+)

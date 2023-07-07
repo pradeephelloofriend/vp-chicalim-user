@@ -19,7 +19,7 @@ const firebaseConfig = {
   
   
   };
-export const createUserProfileDocument = async (userAuth, additionalData,hNo,aNo,wNo) => {
+export const createUserProfileDocument = async (userAuth,additionalData,mNo) => {
     if (!userAuth) return;
     const userRef = firestore.doc(`users/${userAuth.uid}`);
     const snapShot = await userRef.get();
@@ -31,14 +31,12 @@ export const createUserProfileDocument = async (userAuth, additionalData,hNo,aNo
             await userRef.set({
                 displayName,
                 email,
-                hNo,
-                aNo,
-                wNo,
+                mNo,
                 createdDate,
                 ...additionalData,
-                ...hNo,
-                ...aNo,
-                ...wNo
+                ...mNo
+                
+                
             })
 
         } catch (error) {
