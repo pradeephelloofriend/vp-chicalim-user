@@ -16,11 +16,15 @@ const index = ({cUser}) => {
         <>
         <ProtectRoute>
             {/*<HomeComponent/>*/}
-                    <div className='welcome-head mt-10'>
-                        <p className='mb-0' style={{textTransform:'capitalize'}}><b>{cUser.displayName}</b></p>
-                        <p>Welcome to Village Panchyat ,Chicalim</p>
-                        
-                    </div>
+            {cUser!==null?
+                <div className='welcome-head mt-10'>
+                    <p className='mb-0' style={{textTransform:'capitalize'}}><b>{cUser.displayName}</b></p>
+                    <p>Welcome to Village Panchyat ,Chicalim</p>
+                    
+                </div>
+            
+            :<></>
+            }
             <PendingProfileComponent cUser={cUser}/>
             
           </ProtectRoute>
