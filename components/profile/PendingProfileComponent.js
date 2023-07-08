@@ -14,18 +14,7 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
     const[hVerify,setHverify]=React.useState('')
 
     const [form] = Form.useForm();
-    const sendNewRequest=async(wNo,hNo)=>{
-        try {
-            setIsLoading(true)
-            const {data} = await Axios.post(`/api/user/sendNewRequest`,{wNo:wNo,hNo:hNo,userId:cUser.id})
-            setIsLoading(false)
-            return data
-            
-        } catch (error) {
-            setIsLoading(false)
-        }
-        
-    }
+    
     const onFinish =async(values) => {
         //const hvData=await sendNewRequest(values.wNo,values.hNo)
 
@@ -66,10 +55,11 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
             setIsLoading(true)
            Axios.post('/api/user/checkHouseNumberConfirmation',{uId:id})
            .then(({data})=>{
+            console.log('hose',data)
                 setPdata(data)
                 if (data.length>=1) {
-                    setHverify(data[0].ur_status) //store in state
-                    setHouseVerify(data[0].ur_status) //store in redux
+                    setHverify(data[0]) //store in state
+                    setHouseVerify(data[0]) //store in redux
                     
                 }
                 setIsLoading(false)
@@ -168,7 +158,7 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                 {hVerify &&
                 
                     <>
-                    {hVerify=="N"?
+                    {hVerify.ur_status=="N"?
                     <Alert
                     closable
                     banner
@@ -178,14 +168,14 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                       </Marquee>
                     }
                   />
-                    :hVerify=="C"?
+                    :hVerify.ur_status=="C"?
                     <Alert
                     type="success"
                     closable
                     banner
                     message={
                       <Marquee pauseOnHover gradient={false}>
-                        Your house number added successfully, 
+                        {hVerify.ur_remark} 
                       </Marquee>
                     }
                   />
@@ -195,7 +185,7 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                   banner
                   message={
                     <Marquee pauseOnHover gradient={false}>
-                      You provide wrong information, 
+                      {hVerify.ur_remark}, 
                     </Marquee>
                   }
                 />}
