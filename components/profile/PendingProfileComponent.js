@@ -6,28 +6,64 @@ import Marquee from 'react-fast-marquee';
 import { setHouseVerify } from '../../redux/user/userAction';
 import { connect } from 'react-redux';
 const { Option } = Select;
+const {TextArea}=Input
 const PendingProfileComponent = ({cUser,setHouseVerify}) => {
     const router=useRouter()
     const[pData,setPdata]=React.useState(null)
     const[isLoading,setIsLoading]=React.useState(false)
+    const[isLoading1,setIsLoading1]=React.useState(false)
     const[wardList,setWardList]=React.useState(null)
     const[hVerify,setHverify]=React.useState('')
-
+    const [erMsg,setErMsg]=React.useState('')
+    const[hnVerify,setHnVerify]=React.useState(null)
+    const[avilable,setAvilable]=React.useState('')
+    const [hOwnerName,setHOwnerName]=React.useState('')
+    const [wardNo,setWardNo]=React.useState('')
+    const [houseNo,setHouseNo]=React.useState('')
     const [form] = Form.useForm();
-    
+    const verifyHouseNumber= async()=>{
+        try {
+        setErMsg('')
+        setIsLoading1(true)
+        Axios.post(`/api/user/verifyHouseNumber`,{wNo:wardNo,hNo:houseNo})
+        .then(({data})=>{
+            console.log('verify house number',data)
+            if (data.length>=1) {
+                setHOwnerName(data[0].m_name)
+                form.setFieldsValue({hwName:data[0].m_name})
+            }else{
+                setHOwnerName('N/A')
+                form.setFieldsValue({hwName:'N/A'})
+                
+            }
+            setIsLoading1(false)
+            
+        })
+        } catch (error) {
+            setErMsg(error.message)
+            setIsLoading1(false)
+        }
+        
+    }
+    console.log('wardNumber',hOwnerName)
     const onFinish =async(values) => {
         //const hvData=await sendNewRequest(values.wNo,values.hNo)
-
-        try {
-            setIsLoading(true)
-            Axios.post(`/api/user/sendNewRequest`,{wNo:values.wNo,hNo:values.hNo,userId:cUser.id})
-            .then(({data})=>{
-                getUserData(cUser.id)
+        if (hOwnerName!=='') {
+            try {
+                setIsLoading(true)
+                Axios.post(`/api/user/sendNewRequest`,{wNo:values.wNo,hNo:values.hNo,userId:cUser.id,hwName:values.hwName})
+                .then(({data})=>{
+                    getUserData(cUser.id)
+                    setIsLoading(false)
+                })
+            } catch (error) {
                 setIsLoading(false)
-            })
-        } catch (error) {
-            setIsLoading(false)
+            }
+        } else {
+            setErMsg('Please verify your house number')
         }
+
+        
         //console.log('hvData',hvData)
        
     }
@@ -105,6 +141,8 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
 
                         initialValues={{
                             remember: true,
+                           
+
                         }}
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
@@ -119,7 +157,9 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                                   message: 'Please input your password!',
                               },
                           ]}>
-                          <Select onClick={() => selectHandeler()}
+                          <Select 
+                          onChange={(value)=>setWardNo(value)}
+                          onClick={() => selectHandeler()}
                               loading={isLoading}
                               placeholder="Select ward no"
                           >
@@ -136,9 +176,28 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                           name="hNo"
                             rules={[{ required: true, message: 'Please input your House number!' }]}
                       >
-                         <Input style={{width:'100%'}} placeholder='House Number' />
+                         <Input 
+                         onChange={(e)=>{
+                            setHouseNo(e.target.value)
+                            setHOwnerName('')}
+                        } 
+                         style={{width:'100%'}} 
+                         placeholder='House Number' 
+                         addonAfter={<a onClick={()=>verifyHouseNumber()}>Verify</a>} 
+                         />
                         
                       </Form.Item>
+                      {hOwnerName&&
+                      
+                      <Form.Item
+                        label="House Owner Name"
+                        name="hwName"
+                          
+                        >
+                       <Input style={{width:'100%'}} defaultValue={hOwnerName} value={hOwnerName} placeholder='House Owner Name' />
+                      
+                    </Form.Item>
+                      }
                       
                       <Form.Item >
 
@@ -147,6 +206,7 @@ const PendingProfileComponent = ({cUser,setHouseVerify}) => {
                   </Button>
               </Form.Item>
                     </Form>
+                    {erMsg&&<p className='text-danger'>{erMsg}</p>}
                     </div>
                     
                 </Card>

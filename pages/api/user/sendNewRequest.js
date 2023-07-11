@@ -2,7 +2,7 @@ const API_URL = process.env.SQL_API_PATH
 
 export default async function sendNewRequest(req, res) {
     
-    const { userId,hNo,wNo} = req.body;
+    const { userId,hNo,wNo,hwName} = req.body;
     //console.log("req nom", userId+","+userName+","+email+","+hNo+","+aNo+","+wNo)
     /**********
      * slug[0]=item id,slug[1]=quantity,slug[2]=userid
@@ -20,6 +20,7 @@ export default async function sendNewRequest(req, res) {
                 userId: userId,
                 hNo:hNo,
                 wNo:wNo,
+                hwName:hwName
                 
                 
                 
