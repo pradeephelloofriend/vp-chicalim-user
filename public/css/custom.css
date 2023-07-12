@@ -82,3 +82,35 @@
 .signup-form .ant-form-item{
 margin-bottom: 12px;
 }
+
+.hdr-pd {
+  margin: 8% 0% 8% 0%;
+}
+
+.container-receipt {
+  /* margin-left: auto;
+  margin-right: auto; */
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.sp-top {
+  margin-top: 5%;
+}
+
+.sgn-sp {
+  margin-top: 70%;
+}
+
+.text-container {
+  position: absolute;
+  right: 5%;
+  bottom: 0;
+}
+
+.center-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
