@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Checkbox, Form, Input,Table,Card,Empty,Spin} from 'antd';
+import { Button, Checkbox, Form, Input,Table,Card,Empty,Spin, Select} from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
@@ -15,7 +15,13 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
     const [selctionData,setSelectionData]=React.useState(null)
     const [tAmt,setTamt]=React.useState(0)
     const [loading,setLoading]=React.useState(false)
+    const[hnData,setHnData]=React.useState(null)
+    const[houseNo,setHouseNo]=React.useState(null) //addres number
 
+  const onChangeSelect=(value)=>{
+    console.log('select',value)
+    setHouseNo(value)
+  }
     const columns = [
         {
           title: 'Sr. No',
@@ -87,23 +93,35 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
           setLoading(false)
         }
       }  
-    const onFinish = (values) => {
-        //var num=Number('516/Q')
-        
-        //router.push('/payment')
-        //console.log('Success:', values);
-      };
     
-      const onFinishFailed = (errorInfo) => {
-        //console.log('Failed:', errorInfo);
-      };
+      const[isLoading,setIsLoading]=React.useState(false)
+      const selectHandeler=()=>{
+        try {
+            setIsLoading(true)
+            Axios.post(`/api/user/getAllHouseNoByUid`,{uId:cUser.id})
+            .then(({data})=>{
+              setHnData(data)
+              setIsLoading(false)
+            }).catch((error)=>{
+              setIsLoading(false)
+            })
+        } catch (error) {
+            setIsLoading(false)
+        }
+        
+        //alert('hhggg')
+    }
       //console.log('loading',loading)
       React.useEffect(()=>{
         let isAppSubsribed=true
         if (isAppSubsribed) {
-            getHouseTaxData(cUser.hNo)
+            //getHouseTaxData(cUser.hNo)
+            if (houseNo!==null) {
+              getHouseTaxData(houseNo)
+            }
+           //getAllHouseNumber(cUser.id)
         }
-      },[cUser])
+      },[cUser,houseNo])
       //console.log('tamount',Number(tAmt))
   return (
     <>
@@ -114,7 +132,28 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
             <h3>{'TAX PAYMENTS'}</h3>
             <p>Amount shown is outstanding towards your account. To avoid additional fees, please pay.</p>
           </div>
-          
+          <div className='mb-10'>
+            <div>
+            <a>Select House Number</a>
+            </div>
+             <Select 
+             style={{width:'30%'}}
+             onClick={() => selectHandeler()}
+             //onChange={(value)=>onChangeSelect(value)}
+             onSelect={(value)=>onChangeSelect(value)}
+             loading={isLoading}
+             placeholder="Select House Number"
+             >
+              {
+                hnData!==null?
+                hnData.map((h,hx)=>
+                <Select.Option key={hx} value={h.m_an}>{h.m_hno}</Select.Option>
+                )
+                :<></>
+              }
+              
+             </Select>
+          </div>
 
           {taxData !== null ?
             <>
@@ -122,7 +161,9 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
               <div className='col-md-6'>
                 <div className='scheme-block'>
 
-                  <Table bordered
+                  <Table 
+                  loading={loading}
+                  bordered
                     rowSelection={{
                       type: 'checkbox',
                       ...rowSelection,
@@ -143,8 +184,7 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
 
             :
             <>
-              <p className='text-red'>No Data Found</p>
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              
             </>
 
           }

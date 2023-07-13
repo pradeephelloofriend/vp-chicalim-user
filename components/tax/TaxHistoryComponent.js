@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { createStructuredSelector } from 'reselect';
 import { selectCuser } from '../../redux/user/userSelector';
-import { Button, Checkbox, Form, Input,Table,Card,Empty,Spin} from 'antd';
+import { Button, Checkbox, Form, Input,Table,Card,Empty,Spin, Select} from 'antd';
 
 import { useRouter } from 'next/router';
 import Axios from 'axios';
@@ -11,12 +11,35 @@ const TaxHistoryComponent = ({cUser}) => {
     const [selctionData,setSelectionData]=React.useState(null)
     const [tAmt,setTamt]=React.useState(0)
     const [loading,setLoading]=React.useState(false)
+    const[hnData,setHnData]=React.useState(null)
+    const[houseNo,setHouseNo]=React.useState(null) //addres number
     //------------------------------
-    React.useEffect(()=>{
-        let isApiSubscribed = true;
+    const onChangeSelect=(value)=>{
+      console.log('select',value)
+      setHouseNo(value)
+    }
+
+    const[isLoading,setIsLoading]=React.useState(false)
+      const selectHandeler=()=>{
+        try {
+            setIsLoading(true)
+            Axios.post(`/api/user/getAllHouseNoByUid`,{uId:cUser.id})
+            .then(({data})=>{
+              setHnData(data)
+              setIsLoading(false)
+            }).catch((error)=>{
+              setIsLoading(false)
+            })
+        } catch (error) {
+            setIsLoading(false)
+        }
+        
+        //alert('hhggg')
+    }
+    const getTaxHistoryData=(houseNo)=>{
+      try {
         setLoading(true)
-        if(isApiSubscribed){
-            Axios.post(`/api/getTaxPayment/byUserId`,{ uid:cUser.id})
+        Axios.post(`/api/getTaxPayment/byUserId`,{ uid:houseNo})
             .then(({ data }) => {
                 const tempData=[]
                 //console.log('api-tax-data',data)
@@ -30,13 +53,26 @@ const TaxHistoryComponent = ({cUser}) => {
                 setTaxData(tempData.length>=1?tempData:null)
                 setLoading(false)
                 
+            }).catch((error)=>{
+              setLoading(false)
             })
+      } catch (error) {
+        setLoading(false)
+      }
+    }
+    React.useEffect(()=>{
+        let isApiSubscribed = true;
+        ////setLoading(true)
+        if(isApiSubscribed){
+            if (houseNo!==null) {
+              getTaxHistoryData(houseNo)
+            }
         }
         return () => {
             // cancel the subscription
             isApiSubscribed = false;
           };
-    },[cUser])
+    },[cUser,houseNo])
     //----------
     const columns = [
         {
@@ -89,6 +125,28 @@ const TaxHistoryComponent = ({cUser}) => {
                         <h3>{'TAX PAYMENTS HISTORY'}</h3>
                         <p>Enter the details to get Your tax payments list and details.</p>
                     </div>
+                    <div className='mb-10'>
+            <div>
+            <a>Select House Number</a>
+            </div>
+             <Select 
+             style={{width:'30%'}}
+             onClick={() => selectHandeler()}
+             //onChange={(value)=>onChangeSelect(value)}
+             onSelect={(value)=>onChangeSelect(value)}
+             loading={isLoading}
+             placeholder="Select House Number"
+             >
+              {
+                hnData!==null?
+                hnData.map((h,hx)=>
+                <Select.Option key={hx} value={h.m_an}>{h.m_hno}</Select.Option>
+                )
+                :<></>
+              }
+              
+             </Select>
+          </div>
                     {taxData!==null?
                         <div className='scheme-block'>
                              <Spin spinning={loading}>  
