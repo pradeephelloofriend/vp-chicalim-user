@@ -24,8 +24,12 @@ module.exports = {
 
         /**GoogleRecaptcha key */
         GCAPTACHA_SITE_KEY:'6LeB6u8mAAAAAL8gsl8Qpo8m3kkBJ-Gm30iri1Sk',
-        GCAPTCHA_SEC_KEY:'6LeB6u8mAAAAAJhCP9swXiPvD7gjLp0iRADR8Z7H'
+        GCAPTCHA_SEC_KEY:'6LeB6u8mAAAAAJhCP9swXiPvD7gjLp0iRADR8Z7H',
 
+        /**twilo setup */
+        TWILO_SID:'AC2b0df5e76f601d2c9ed1af4ae1c1ade8',
+        TWILO_TOKEN:'43ad5556ed0497316c6ebdf6c4e15e40',
+        TWILO_NUMBER:'+13258800801'
     },
     // Uncomment the line below to enable basePath, pages and
     // redirects will then have a path prefix (`/app` in this case)

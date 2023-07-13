@@ -7,6 +7,7 @@ import MakeTaxPaymentComponent from '../payment/MakeTaxPaymentComponent';
 import { createStructuredSelector } from 'reselect';
 import { selectCuser, selectHouseVerify } from '../../redux/user/userSelector';
 import { connect } from 'react-redux';
+import SendSmsButton from '../message/SendSmsButton';
 
 const TaxPaymentComponent = ({cUser,hVerify}) => {
     const router= useRouter()
@@ -125,7 +126,7 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
       //console.log('tamount',Number(tAmt))
   return (
     <>
-    <Spin spinning={loading}>
+    
       <div className="row">
         
           <div className="caption1 mt-10">
@@ -153,9 +154,10 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
               }
               
              </Select>
+             
           </div>
 
-          {taxData !== null ?
+          
             <>
 
               <div className='col-md-6'>
@@ -169,28 +171,23 @@ const TaxPaymentComponent = ({cUser,hVerify}) => {
                       ...rowSelection,
                     }}
                     columns={columns}
-                    dataSource={taxData}
+                    dataSource={taxData !== null?taxData:[]}
                   />
 
 
                 </div>
               </div>
               <div className='col-md-6'>
-                <MakeTaxPaymentComponent tAmt={tAmt} selctionData={selctionData} />
+                <MakeTaxPaymentComponent tAmt={tAmt} aNo={houseNo} selctionData={selctionData} />
 
               </div>
 
             </>
 
-            :
-            <>
-              
-            </>
-
-          }
+           
 
       </div>
-    </Spin >
+    
 
 
 

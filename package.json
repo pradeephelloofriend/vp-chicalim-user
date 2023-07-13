@@ -65,6 +65,7 @@
     "simple-react-lightbox": "^3.6.9-0",
     "slick-carousel": "^1.8.1",
     "swiper": "^7.3.1",
+    "twilio": "^4.13.0",
     "typewriter-effect": "^2.18.2",
     "uniqid": "^5.4.0"
   }

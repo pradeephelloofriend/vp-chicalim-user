@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import { createStructuredSelector } from 'reselect';
 import { selectCuser } from '../../redux/user/userSelector';
 import { Button, Checkbox, Form, Input,Table,Card,Empty,Spin, Select} from 'antd';
-
+import moment from 'moment';
 import { useRouter } from 'next/router';
 import Axios from 'axios';
 const TaxHistoryComponent = ({cUser}) => {
@@ -46,8 +46,8 @@ const TaxHistoryComponent = ({cUser}) => {
                 
                 data.forEach((element,idx) => {
                     //console.log('element',element)
-                    tempData.push({key:element.dddocno,sNo:idx+1,desc:element.ddrmk,ddrefnopy:element.ddrefnopy,ddpydt:element.ddpydt,ddamount:element.ddamount,ddan:element.ddan,dddocno:element.dddocno,ddrefno
-                    :element.ddrefno,ddid:element.ddid})
+                    tempData.push({key:element.DDDOCNO,sNo:idx+1,desc:element.DDRMK,ddrefnopy:element.DDREFNOPY,ddpydt:element.DDPYDT,ddamount:element.DDAMOUNT,ddan:element.DDAN,dddocno:element.DDDOCNO,ddrefno
+                    :element.DDREFNO,ddid:element.DDID})
                   });
 
                 setTaxData(tempData.length>=1?tempData:null)
@@ -101,7 +101,7 @@ const TaxHistoryComponent = ({cUser}) => {
           dataIndex: 'ddpydt',
           key: 'ddpydt',
           
-          render: text => <a>{text}</a>,
+          render: text => <a>{moment(text).format("DD/MM/YYYY")}</a>,
         },
         {
           title: 'Amount(Rs)',
@@ -111,7 +111,7 @@ const TaxHistoryComponent = ({cUser}) => {
           render: (text,record) =>{
             //console.log('record',record)
             return(
-              <a>{text}</a>
+              <a>₹{text}</a>
             )
           }
         },
@@ -147,26 +147,23 @@ const TaxHistoryComponent = ({cUser}) => {
               
              </Select>
           </div>
-                    {taxData!==null?
+                    
                         <div className='scheme-block'>
-                             <Spin spinning={loading}>  
-                            <Table bordered 
+                               
+                            <Table 
+                            loading={loading}
+                            bordered 
                             /*rowSelection={{
                                 type:'checkbox',
                                 ...rowSelection,
                             }}*/
                             columns={columns} 
-                            dataSource={taxData} 
+                            dataSource={taxData!==null?taxData:[]} 
                             />
-                        </Spin> 
+                        
                         
                         </div>
-                    :
-                    <>
-                      <p className='text-red'>No Data Found</p>
-                      <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-                      </>
-                    }
+                    
                 </div>
             </div>
         </>

@@ -6,7 +6,8 @@ import {Button,Card} from 'antd'
 import { useRouter } from 'next/router'
 import Axios from 'axios';
 import PaymentSuccesModalComponent from '../modal/PaymentSuccesModalComponent';
-const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser}) => {
+
+const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser,aNo}) => {
     const [show,setShow]=React.useState(false)
     const [paymentId,setPaymentId]=React.useState(null)
     const router = useRouter()
@@ -19,6 +20,12 @@ const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser}) => {
       
       
     };
+    
+      const sendMsg=async()=>{
+
+       const{data}=await Axios.post(`/api/message/sendSMS`,{mNo:cUser.mNo})
+       return data
+      }
     const makePayment = async () => {
         //console.log("here...");
         const res = await initializeRazorpay();
@@ -57,14 +64,16 @@ const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser}) => {
             // Validate payment at server - using webhooks is a better idea.
             const payId=response.razorpay_payment_id;
             setPaymentId(payId)
-            Axios.post(`/api/updateTaxPayment`,{ uid:cUser.id,payId:payId,selctionData:selctionData})
-            .then(({ data }) => {
+            Axios.post(`/api/updateTaxPayment`,{ uid:aNo,payId:payId,selctionData:selctionData})
+            .then(async({ data }) => {
                 //const tempData=[]
                 if(data==0){
                    alert('payment unsucessfull') 
                 }else{
-                    
+                    const smsResult=await sendMsg()
+                    console.log('smsResult',smsResult)
                     setShow(true)
+                    
                     
                     
                 }
@@ -77,7 +86,10 @@ const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser}) => {
             //alert(response.razorpay_signature);
           },
           prefill: {
-           
+            name:cUser.displayName,
+            email:cUser.email,
+            contact:cUser.mNo
+
           },
         };
     
@@ -110,7 +122,7 @@ const MakeTaxPaymentComponent = ({tAmt,selctionData,cUser}) => {
                   <h3 className='mb-1'>Rs.{tAmt}</h3>
               </Card>
 
-              <Button  onClick={makePayment} 
+              <Button  onClick={tAmt >= 1 ? makePayment: null} 
               disabled={tAmt >= 1 ? false : true} 
               className='mt-3' block
               >
